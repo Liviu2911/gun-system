@@ -1,8 +1,11 @@
 local weapon: Tool = script.Parent
 local player = game:GetService("Players").LocalPlayer
 local uis = game:GetService("UserInputService")
+local FireSound: Sound = script.Parent.FireSound
+FireSound.Volume = 0.2
 
 local crosshair = require(script.crosshair)
+local fire = require(script.fire)
 
 local Crosshair = crosshair.new(player)
 
@@ -21,6 +24,8 @@ end
 local function setCameraMode(isAiming)
     local targetMode = isAiming and Enum.CameraMode.LockFirstPerson or Enum.CameraMode.Classic
     
+    uis.MouseIconEnabled = not isAiming
+
     player.CameraMode = targetMode
     player.CameraMinZoomDistance = 10
     task.delay(0.25, function()
@@ -35,6 +40,15 @@ weapon.Equipped:Connect(function()
             setCameraMode(true)
             Crosshair:ActivateCrosshair()
         end
+
+        local handle = weapon:FindFirstChild("Handle") :: BasePart
+        task.spawn(function()
+            while uis:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                fire(player, handle.Position)
+                FireSound:Play()
+                task.wait(0.1)
+            end
+        end)
     end))
 
     table.insert(connections, uis.InputEnded:Connect(function(input: InputObject)

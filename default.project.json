@@ -4,9 +4,12 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-      "Weapons": {
-        "$path": "src/shared/weapons"
-      }
+      "Guns": {
+        "$path": "src/shared/guns"
+      },
+      "Auto": {
+        "$path": "src/shared/auto"
+      } 
     },
 
     "ServerScriptService": {
