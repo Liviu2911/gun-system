@@ -1,3 +1,3 @@
 # Gun System
 
-This is a simple gun system
+Hello, this a portfoloi project, written entirely in luau, in vscode.
