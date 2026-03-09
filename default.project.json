@@ -4,12 +4,9 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-      "Guns": {
-        "$path": "src/shared/guns"
-      },
-      "Auto": {
-        "$path": "src/shared/auto"
-      } 
+      "Shared": {
+        "$path": "src/shared/"
+      }
     },
 
     "ServerScriptService": {
@@ -22,6 +19,9 @@
       "StarterPlayerScripts": {
         "Client": {
           "$path": "src/client"
+        },
+        "Gui": {
+          "$path": "src/Gui"
         }
       }
     },

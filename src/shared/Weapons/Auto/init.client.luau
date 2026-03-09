@@ -1,13 +1,15 @@
 local weapon: Tool = script.Parent
 local player = game:GetService("Players").LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local uis = game:GetService("UserInputService")
 local FireSound: Sound = script.Parent.FireSound
 FireSound.Volume = 0.2
 
-local crosshair = require(script.crosshair)
-local fire = require(script.fire)
-
-local Crosshair = crosshair.new(player)
+local state = require(ReplicatedStorage.Shared.Weapons.state)
+local fire = require(ReplicatedStorage.Shared.Weapons.fire)
+local MagazineSize = script.Parent.Magazine.Value
+state.InitAmmo("auto", MagazineSize)
+local Ammo = state.GetAmmos("auto")
 
 local connections = {}
 
@@ -35,31 +37,36 @@ end
 
 weapon.Equipped:Connect(function()
     cleanup()
+    state.ChangeAmmo("auto", Ammo.CurrentMagazine, MagazineSize)
     table.insert(connections, uis.InputBegan:Connect(function(input: InputObject)
         if input.UserInputType == Enum.UserInputType.MouseButton2 then
             setCameraMode(true)
-            Crosshair:ActivateCrosshair()
+            state.OpenCrosshair()
         end
-
-        local handle = weapon:FindFirstChild("Handle") :: BasePart
-        task.spawn(function()
-            while uis:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-                fire(player, handle.Position)
-                FireSound:Play()
-                task.wait(0.1)
-            end
-        end)
     end))
 
     table.insert(connections, uis.InputEnded:Connect(function(input: InputObject)
         if input.UserInputType == Enum.UserInputType.MouseButton2 then
             setCameraMode(false)
-            Crosshair:DeactivateCrosshair()
+            state.CloseCrosshair()
         end
     end))
 end)
 
+weapon.Activated:Connect(function() 
+    local handle = weapon:FindFirstChild("Handle") :: BasePart
+    task.spawn(function()
+        while uis:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+            fire(player, handle.Position, player:GetMouse().Hit.Position)
+            FireSound:Play()
+            Ammo:Shoot()
+            task.wait(0.1)
+        end
+    end)
+end)
+
 weapon.Unequipped:Connect(function()
-    Crosshair:DeactivateCrosshair()
+    state.CloseCrosshair()
     cleanup()
+    state.ChangeAmmo("auto", 0, 0)
 end)

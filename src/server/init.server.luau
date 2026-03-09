@@ -2,9 +2,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterPack = game:GetService("StarterPack")
 local Assets = ReplicatedStorage.Assets
 
-local Gun: Tool = Assets.Weapons.Gun
-local GunScript = ReplicatedStorage.Guns
-local AutoScript = ReplicatedStorage.Auto
+local GunScript = ReplicatedStorage.Shared.Weapons.Guns
+local AutoScript = ReplicatedStorage.Shared.Weapons.Auto
 
 game:GetService("Players").PlayerAdded:Connect(function(player: Player)
     for _, weapon in pairs(Assets.Weapons:GetChildren()) do
@@ -18,5 +17,20 @@ game:GetService("Players").PlayerAdded:Connect(function(player: Player)
 
         local newWeapon = Assets.Weapons[weapon.Name]:Clone()
         newWeapon.Parent = StarterPack
+    end
+end)
+
+local Enemies = workspace.Enemies:GetChildren()
+local EnemyScript = ReplicatedStorage.Shared.Enemy
+
+task.spawn(function()
+    for _, enemy in Enemies do
+        local ScriptCopy = EnemyScript:Clone()
+        ScriptCopy.Parent = enemy
+
+        local root = enemy:FindFirstChild("HumanoidRootPart")
+        if root and root:IsA("BasePart") then
+            root:SetNetworkOwner(nil) 
+        end
     end
 end)
