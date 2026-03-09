@@ -30,10 +30,10 @@ local CurrentAmmo = Instance.new("TextLabel")
 CurrentAmmo.Parent = GunUi
 CurrentAmmo.Name = "CurrentAmmo"
 CurrentAmmo.Text = CurrentMagazine.."/"..MagazineSize
-CurrentAmmo.TextSize = 24
+CurrentAmmo.TextSize = 48
 CurrentAmmo.TextColor3 = Color3.fromRGB(255, 255, 255)
 CurrentAmmo.Font = Enum.Font.Cartoon
-CurrentAmmo.Position = UDim2.fromScale(0.95, 0.95)
+CurrentAmmo.Position = UDim2.fromScale(0.85, 0.85)
 CurrentAmmo.Visible = false
 
 local Crosshair = Instance.new("TextLabel")
@@ -105,7 +105,7 @@ end
 
 -- helper function to reload
 function Reload()
-    if CurrentMagazine == MagazineSize then return end
+    if CurrentMagazine == MagazineSize or Ammo.Value == CurrentMagazine then return end
     isReloading = true
     CurrentAmmo.Text = "Reload..."
     task.delay(2, function()
