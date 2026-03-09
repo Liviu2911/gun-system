@@ -1,3 +1,3 @@
 # Gun System
 
-Hello, this a portfoloi project, written entirely in luau, in vscode.
+Hello, this a portfolio project, written entirely in luau, in vscode.
