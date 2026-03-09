@@ -8,8 +8,8 @@ FireSound.Volume = 0.2
 local state = require(ReplicatedStorage.Shared.Weapons.state)
 local fire = require(ReplicatedStorage.Shared.Weapons.fire)
 local MagazineSize = script.Parent.Magazine.Value
-state.InitAmmo("gun", MagazineSize)
-local Ammo = state.GetAmmos("gun")
+state.InitAmmo("gun", MagazineSize, "8/8")
+local Ammo = state.GetAmmo("gun")
 
 local function setCameraMode(isAiming)
     local targetMode = isAiming and Enum.CameraMode.LockFirstPerson or Enum.CameraMode.Classic
@@ -24,7 +24,7 @@ local function setCameraMode(isAiming)
 end
 
 weapon.Equipped:Connect(function()  
-    state.ChangeAmmo("gun", Ammo.CurrentMagazine, MagazineSize)
+    state.ChangeWeapon("gun")
     uis.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton2 then
             setCameraMode(true)
@@ -42,14 +42,12 @@ end)
 
 weapon.Activated:Connect(function()
     local handle = weapon:FindFirstChild("Handle") :: BasePart
-    if Ammo.isReloading then return end
+    if not Ammo:Shoot() then return end
     FireSound:Play()
     local damage = script.Parent.Damage.Value
     fire(player.Character, handle.Position, player:GetMouse().Hit.Position, damage)
-    Ammo:Shoot()
 end)
 
 weapon.Unequipped:Connect(function()
-    state.CloseCrosshair()
-    state.ChangeAmmo("gun", 0, 0)
+    state.ChangeWeapon()
 end)
