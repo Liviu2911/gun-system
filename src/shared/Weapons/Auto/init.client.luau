@@ -57,7 +57,8 @@ weapon.Activated:Connect(function()
     local handle = weapon:FindFirstChild("Handle") :: BasePart
     task.spawn(function()
         while uis:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-            fire(player, handle.Position, player:GetMouse().Hit.Position)
+            local damage = script.Parent.Damage.Value
+            fire(player.Character, handle.Position, player:GetMouse().Hit.Position, damage)
             FireSound:Play()
             Ammo:Shoot()
             task.wait(0.1)

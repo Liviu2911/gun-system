@@ -42,8 +42,10 @@ end)
 
 weapon.Activated:Connect(function()
     local handle = weapon:FindFirstChild("Handle") :: BasePart
+    if Ammo.isReloading then return end
     FireSound:Play()
-    fire(player.Character, handle.Position, player:GetMouse().Hit.Position)
+    local damage = script.Parent.Damage.Value
+    fire(player.Character, handle.Position, player:GetMouse().Hit.Position, damage)
     Ammo:Shoot()
 end)
 

@@ -1,6 +1,6 @@
 local weapon = script.Parent.Parent
 
-function Fire(shooter, weaponPosition: Vector3, destination)
+function Fire(shooter, weaponPosition: Vector3, destination, damage)
     local origin = weaponPosition
     local direction = (destination - origin).Unit * 50
     local params = RaycastParams.new()
@@ -15,7 +15,7 @@ function Fire(shooter, weaponPosition: Vector3, destination)
         if character then
             local humanoid = character:FindFirstChild("Humanoid")
             if humanoid then
-                humanoid:TakeDamage(0)
+                humanoid:TakeDamage(tonumber(damage))
             end
         end
     end
