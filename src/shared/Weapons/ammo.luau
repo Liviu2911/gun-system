@@ -1,10 +1,10 @@
-local Players = game:GetService("Players")
-local CurrentAmmo = Players.LocalPlayer.PlayerGui.Ammo.CurrentAmmo
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local updateUiEvent = ReplicatedStorage.Events.UpdateUi
 
 local module = {}
 module.__index = module
 
-function module.new(startingAmmo: number, MagazineSize: number)
+function module.new(startingAmmo: number, MagazineSize: number, name: string)
     local self = setmetatable({}, module)
 
     if startingAmmo >= MagazineSize then
@@ -16,17 +16,21 @@ function module.new(startingAmmo: number, MagazineSize: number)
     self.Ammos = startingAmmo 
     self.MagazineSize = MagazineSize
     self.isReloading = false
+    self.Name = name
 
     return self
 end
 
-function UpdateUi(self)
-    CurrentAmmo.Text = "Reload..."
-    self.isReloading = true
-    task.wait(2)
-    self.isReloading = false
-    CurrentAmmo.Text = self.CurrentMagazine.."/"..self.MagazineSize
+function module:Equip()
+    updateUiEvent:Fire(self.Name, self.isReloading and "Reload..." or self.CurrentMagazine.."/"..self.MagazineSize)
+end
 
+function UpdateUi(self)
+    updateUiEvent:Fire(self.Name, "Reload...")
+    self.isReloading = true
+    task.wait(4)
+    self.isReloading = false
+    updateUiEvent:Fire(self.Name, self.CurrentMagazine.."/"..self.MagazineSize)
 end
 
 function module:Reload()
@@ -47,12 +51,14 @@ function module:Reload()
 end
 
 function module:Shoot()
-    if self.isReloading then return end
+    if self.isReloading then return false end
     if self.CurrentMagazine > 0 then
         self.CurrentMagazine -= 1
         self.Ammos -= 1
-        CurrentAmmo.Text = self.CurrentMagazine.."/"..self.MagazineSize
+        updateUiEvent:Fire(self.Name, self.CurrentMagazine.."/"..self.MagazineSize)
+        return true
     end
+    return false
 end
 
 function module:AddAmmo(value: number)

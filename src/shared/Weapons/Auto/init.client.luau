@@ -8,8 +8,8 @@ FireSound.Volume = 0.2
 local state = require(ReplicatedStorage.Shared.Weapons.state)
 local fire = require(ReplicatedStorage.Shared.Weapons.fire)
 local MagazineSize = script.Parent.Magazine.Value
-state.InitAmmo("auto", MagazineSize)
-local Ammo = state.GetAmmos("auto")
+state.InitAmmo("auto", MagazineSize, "16/16")
+local Ammo = state.GetAmmo("auto")
 
 local connections = {}
 
@@ -37,7 +37,7 @@ end
 
 weapon.Equipped:Connect(function()
     cleanup()
-    state.ChangeAmmo("auto", Ammo.CurrentMagazine, MagazineSize)
+    state.ChangeWeapon("auto")
     table.insert(connections, uis.InputBegan:Connect(function(input: InputObject)
         if input.UserInputType == Enum.UserInputType.MouseButton2 then
             setCameraMode(true)
@@ -67,7 +67,6 @@ weapon.Activated:Connect(function()
 end)
 
 weapon.Unequipped:Connect(function()
-    state.CloseCrosshair()
     cleanup()
-    state.ChangeAmmo("auto", 0, 0)
+    state.ChangeWeapon()
 end)
